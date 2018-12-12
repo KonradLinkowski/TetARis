@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4655031860482782}
   m_Layer: 0
   m_Name: Pivot
-  m_TagString: Untagged
+  m_TagString: Pivot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39,7 +39,7 @@ GameObject:
   - component: {fileID: 65992227842326906}
   m_Layer: 0
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -52,9 +52,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4538233329795844}
+  - component: {fileID: 114839508825475400}
+  - component: {fileID: 114918752371701280}
   m_Layer: 0
   m_Name: Block Z
-  m_TagString: Untagged
+  m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -72,7 +74,7 @@ GameObject:
   - component: {fileID: 65013339611313990}
   m_Layer: 0
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -90,7 +92,7 @@ GameObject:
   - component: {fileID: 65262984977027986}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -108,7 +110,7 @@ GameObject:
   - component: {fileID: 65461232561362086}
   m_Layer: 0
   m_Name: Cube (3)
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -412,3 +414,37 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114839508825475400
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1527477576128016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fc7342c47cc05c45bd5eb9c0c0a4516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chunks:
+  - {fileID: 1674529578576394}
+  - {fileID: 1569832451644072}
+  - {fileID: 1365805652931962}
+  - {fileID: 1941391651791236}
+  pivot: {fileID: 4655031860482782}
+--- !u!114 &114918752371701280
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1527477576128016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fc7342c47cc05c45bd5eb9c0c0a4516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chunks:
+  - {fileID: 1674529578576394}
+  - {fileID: 1569832451644072}
+  - {fileID: 1365805652931962}
+  - {fileID: 1941391651791236}
+  pivot: {fileID: 4655031860482782}

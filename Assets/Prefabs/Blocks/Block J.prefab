@@ -19,9 +19,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4507009005618990}
+  - component: {fileID: 114074475478641708}
   m_Layer: 0
   m_Name: Block J
-  m_TagString: Untagged
+  m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39,7 +40,7 @@ GameObject:
   - component: {fileID: 65909146701855968}
   m_Layer: 0
   m_Name: Cube (2)
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -54,7 +55,7 @@ GameObject:
   - component: {fileID: 4979489743022800}
   m_Layer: 0
   m_Name: Pivot
-  m_TagString: Untagged
+  m_TagString: Pivot
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -72,7 +73,7 @@ GameObject:
   - component: {fileID: 65354097445020292}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -90,7 +91,7 @@ GameObject:
   - component: {fileID: 65612505862102614}
   m_Layer: 0
   m_Name: Cube (1)
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -108,7 +109,7 @@ GameObject:
   - component: {fileID: 65045566576117980}
   m_Layer: 0
   m_Name: Cube (3)
-  m_TagString: Untagged
+  m_TagString: Chunk
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -412,3 +413,20 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &114074475478641708
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1127967995429202}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fc7342c47cc05c45bd5eb9c0c0a4516, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chunks:
+  - {fileID: 1878178538029314}
+  - {fileID: 1906373238390084}
+  - {fileID: 1432231231200982}
+  - {fileID: 1911319600239272}
+  pivot: {fileID: 4979489743022800}

@@ -9,6 +9,7 @@ namespace TetARis.Core {
 
 		public GameObject[] chunks;
 		public Transform pivot;
+		public Transform startingPoint;
 
 		void OnEnable() {
 			List<GameObject> chunks = new List<GameObject>();
@@ -17,6 +18,8 @@ namespace TetARis.Core {
 					pivot = child;
 				} else if (child.CompareTag("Chunk")) {
 					chunks.Add(child.gameObject);
+				} else if (child.CompareTag("StartingPoint")) {
+					startingPoint = child;
 				}
 			}
 			this.chunks = chunks.ToArray();

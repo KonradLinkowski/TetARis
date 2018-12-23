@@ -48,17 +48,15 @@ namespace TetARis.Core {
 			spawnNewBlock();
 		}
 		
-		// Update is called once per frame
 		void FixedUpdate () {
 			timer += Time.deltaTime;
 			if (timer >= fallTime) {
-				// spawnNewBlock();
 				Vector2 transition = new Vector2(0, -stepHeight);
-				// if (canMoveBlock(transition)) {
-				// 	moveBlock(transition);
-				// } else {
-				// 	sealBlock();
-				// }
+				if (canMoveBlock(transition)) {
+					moveBlock(transition);
+				} else {
+					sealBlock();
+				}
 				timer = 0;
 			}
 		}
@@ -84,7 +82,6 @@ namespace TetARis.Core {
 		}
 
 		bool canMoveBlock(Vector2 transition) {
-			Utils.Log("new");
 			foreach (GameObject block in currentBlock.chunks) {
 				Vector2 desiredPosition = (Vector2)block.transform.position + transition;
 				Vector2Int boardDesiredPos = new Vector2Int(
@@ -135,6 +132,44 @@ namespace TetARis.Core {
 				moveBlock(transition);
 			}
 			sealBlock();
+		}
+
+		public void Rotate(bool counterClockwise) {
+			if(canRotateBlock(counterClockwise)) {
+				rotateBlock(counterClockwise);
+			}
+		}
+
+		private bool canRotateBlock(bool counterClockwise) {
+			foreach (GameObject block in currentBlock.chunks) {
+				Vector2 desiredPosition = 
+					Quaternion.Euler(0, 0, 90 * (counterClockwise ? 1 : -1))
+					* (block.transform.position - currentBlock.pivot.position)
+					+ currentBlock.pivot.position;
+				Vector2Int boardDesiredPos = new Vector2Int(
+					Mathf.FloorToInt((desiredPosition.x - leftTopCorner.position.x) / stepWidth),
+					Mathf.FloorToInt((desiredPosition.y - rightBottomCorner.position.y) / stepHeight)
+				);
+				if (boardDesiredPos.x >= width
+					|| boardDesiredPos.x < 0
+					|| boardDesiredPos.y < 0) {
+						return false;
+				}
+				if (boardDesiredPos.y < height && board[boardDesiredPos.x, boardDesiredPos.y]) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		private void rotateBlock(bool counterClockwise) {
+			foreach (GameObject block in currentBlock.chunks) {
+				block.transform.RotateAround(
+					currentBlock.pivot.position,
+					Vector3.forward,
+					90 * (counterClockwise ? 1 : -1)
+				);
+			}
 		}
 
 		public void SwapWithStash() {

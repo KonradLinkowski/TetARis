@@ -7,6 +7,7 @@ TagManager:
   - Pivot
   - Block
   - Chunk
+  - StartingPoint
   layers:
   - Default
   - TransparentFX

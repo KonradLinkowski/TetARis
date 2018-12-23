@@ -25,7 +25,7 @@ namespace TetARis.Core {
 		private float stepHeight;
 		private float stepWidth;
 
-		private bool[,] board;
+		private GameObject[,] board;
 
 		[SerializeField]
 		private Transform leftTopCorner;
@@ -34,6 +34,8 @@ namespace TetARis.Core {
 		[SerializeField]
 		private Transform spawnPoint;
 
+		private bool recalc = false;
+
 		void OnEnable() {
 			Instance = this;
 		}
@@ -41,7 +43,7 @@ namespace TetARis.Core {
 		void Start () {
 			stepHeight = Mathf.Abs(rightBottomCorner.position.y - leftTopCorner.position.y) / height;
 			stepWidth = Mathf.Abs(rightBottomCorner.position.x - leftTopCorner.position.x) / width;
-			board = new bool[width, height];
+			board = new GameObject[width, height];
 			currentBlock = randomBlock();
 			blockQueue = new Queue<Block>();
 			fillQueue();
@@ -49,15 +51,17 @@ namespace TetARis.Core {
 		}
 		
 		void FixedUpdate () {
-			timer += Time.deltaTime;
-			if (timer >= fallTime) {
-				Vector2 transition = new Vector2(0, -stepHeight);
-				if (canMoveBlock(transition)) {
-					moveBlock(transition);
-				} else {
-					sealBlock();
+			if (!recalc) {
+				timer += Time.deltaTime;
+				if (timer >= fallTime) {
+					Vector2 transition = new Vector2(0, -stepHeight);
+					if (canMoveBlock(transition)) {
+						moveBlock(transition);
+					} else {
+						recalculation();
+					}
+					timer = 0;
 				}
-				timer = 0;
 			}
 		}
 
@@ -88,8 +92,6 @@ namespace TetARis.Core {
 					Mathf.FloorToInt((desiredPosition.x - leftTopCorner.position.x) / stepWidth),
 					Mathf.FloorToInt((desiredPosition.y - rightBottomCorner.position.y) / stepHeight)
 				);
-				// Utils.Log(desiredPosition.y, rightBottomCorner.position.y, desiredPosition.y - rightBottomCorner.position.y, boardDesiredPos.y);
-				// Utils.Log(boardDesiredPos);
 				if (boardDesiredPos.x >= width
 					|| boardDesiredPos.x < 0
 					|| boardDesiredPos.y < 0) {
@@ -112,11 +114,18 @@ namespace TetARis.Core {
 					Mathf.FloorToInt((block.transform.position.x - leftTopCorner.position.x) / stepWidth),
 					Mathf.FloorToInt((block.transform.position.y - rightBottomCorner.position.y) / stepHeight)
 				);
-				board[boardPosition.x, boardPosition.y] = true;
+				board[boardPosition.x, boardPosition.y] = block;
 			}
 			currentBlock.transform.DetachChildren();
 			Destroy(currentBlock.gameObject);
+		}
+
+		private void recalculation() {
+			recalc = true;
+			sealBlock();
+			tryToClearLines();
 			spawnNewBlock();
+			recalc = false;
 		}
 
 		public void Move(Vector2 direction) {
@@ -131,7 +140,7 @@ namespace TetARis.Core {
 			while (canMoveBlock(transition)) {
 				moveBlock(transition);
 			}
-			sealBlock();
+			recalculation();
 		}
 
 		public void Rotate(bool counterClockwise) {
@@ -169,6 +178,36 @@ namespace TetARis.Core {
 					Vector3.forward,
 					90 * (counterClockwise ? 1 : -1)
 				);
+			}
+		}
+
+		private void tryToClearLines() {
+			for (int row =  board.GetLength(1) - 1; row >= 0;) {
+				for (int el = 0; el <= board.GetLength(0); el += 1) {
+					if (el == board.GetLength(0)) {
+						clearLine(row);
+					} else if (!board[el, row]) {
+						row -= 1;
+						break;
+					}
+				}
+			}
+		}
+
+		private void clearLine(int line) {
+			for (int el = 0; el < board.GetLength(0); el += 1) {
+				Destroy(board[el, line]);
+				board[el, line] = null;
+			}
+			for (int row = line + 1; row < board.GetLength(1); row += 1) {
+				for (int el = 0; el < board.GetLength(0); el += 1) {
+					Utils.Log(el, row);
+					if (board[el, row]) {
+						board[el, row].transform.Translate(Vector2.down * stepHeight, Space.World);
+						board[el, row - 1] = board[el, row];
+						board[el, row] = null;
+					}
+				}
 			}
 		}
 

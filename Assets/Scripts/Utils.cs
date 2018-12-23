@@ -11,7 +11,7 @@ public static class Utils
     Debug.Log(string.Join("\n", objects.ConvertAll(o => o.ToString()).ToArray()));
   }
 
-  public static void LogBoard(bool[,] array, string trueChar, string falseChar) {
+  public static void LogBoard(Object[,] array, string trueChar, string falseChar) {
     List<string> lines = new List<string>();
     for (int i = array.GetLength(1) - 1; i >= 0; i--) {
       List<string> cells = new List<string>();

@@ -56,7 +56,6 @@ namespace TetARis.Core {
 		
 		void FixedUpdate () {
 			if (!recalc && !gameOver) {
-				print(stash);
 				timer += Time.deltaTime;
 				if (timer >= fallTime) {
 					Vector2 transition = new Vector2(0, -stepHeight);

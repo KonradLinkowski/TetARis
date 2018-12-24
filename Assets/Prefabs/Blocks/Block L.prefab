@@ -358,7 +358,8 @@ MonoBehaviour:
   - {fileID: 1934336675157886}
   - {fileID: 1019613526562440}
   pivot: {fileID: 4621705930583860}
-  startingPoint: {fileID: 0}
+  startingPoint: {fileID: 2713403765173539460}
+  type: 2
 --- !u!1 &1934336675157886
 GameObject:
   m_ObjectHideFlags: 0

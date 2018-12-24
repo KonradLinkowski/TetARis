@@ -267,7 +267,8 @@ MonoBehaviour:
   - {fileID: 1798345900878182}
   - {fileID: 1901211263533932}
   pivot: {fileID: 4461262792579828}
-  startingPoint: {fileID: 0}
+  startingPoint: {fileID: 904762591878938729}
+  type: 3
 --- !u!1 &1878626096359390
 GameObject:
   m_ObjectHideFlags: 0
@@ -460,7 +461,7 @@ GameObject:
   m_Component:
   - component: {fileID: 904762591878938729}
   m_Layer: 0
-  m_Name: Pivot (1)
+  m_Name: Start
   m_TagString: StartingPoint
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

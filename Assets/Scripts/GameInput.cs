@@ -19,6 +19,8 @@ namespace TetARis.Core {
         BoardManager.Instance.Drop();
       } else if (Input.GetKeyDown(KeyCode.R)) {
         BoardManager.Instance.SwapWithStash();
+      } else if (Input.GetKeyDown(KeyCode.P)) {
+        BoardManager.Instance.PrintBoard();
       }
     }
   }

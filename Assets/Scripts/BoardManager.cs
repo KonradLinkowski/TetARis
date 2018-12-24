@@ -12,7 +12,7 @@ namespace TetARis.Core {
 
 		private Block currentBlock;
 
-		private Block stash = null;
+		private Block.Type? stash = null;
 		private Queue<Block> blockQueue;
 		[SerializeField]
 		private int queueLength;
@@ -36,6 +36,10 @@ namespace TetARis.Core {
 
 		private bool recalc = false;
 
+		public bool gameOver = false;
+
+		private bool stashed = false;
+
 		void OnEnable() {
 			Instance = this;
 		}
@@ -47,11 +51,12 @@ namespace TetARis.Core {
 			currentBlock = randomBlock();
 			blockQueue = new Queue<Block>();
 			fillQueue();
-			spawnNewBlock();
+			spawnNewBlock(null, null);
 		}
 		
 		void FixedUpdate () {
-			if (!recalc) {
+			if (!recalc && !gameOver) {
+				print(stash);
 				timer += Time.deltaTime;
 				if (timer >= fallTime) {
 					Vector2 transition = new Vector2(0, -stepHeight);
@@ -75,13 +80,23 @@ namespace TetARis.Core {
 			}
 		}
 
-		void spawnNewBlock() {
-			currentBlock = Instantiate(blockQueue.Dequeue(), spawnPoint.position, Quaternion.identity);
-			currentBlock.transform.Translate(
-				currentBlock.transform.position.x - currentBlock.startingPoint.position.x,
-				currentBlock.transform.position.y - currentBlock.startingPoint.position.y,
-				0
+		void spawnNewBlock(Vector3? position, Block.Type? pref) {
+			Block prefab = pref != null ? blocksPrefabs[(int)pref] : blockQueue.Dequeue();
+			Vector3 stashOffset = Vector3.zero;
+			if (pref != null) {
+				stashOffset = prefab.startingPoint.localPosition - currentBlock.startingPoint.localPosition;
+			}
+			currentBlock = Instantiate(
+				prefab,
+				position != null ? (Vector3)position : spawnPoint.position,
+				Quaternion.identity
 			);
+			currentBlock.transform.Translate(stashOffset);
+			// if (position == null) {
+				Vector3 offset = currentBlock.startingPoint.position - currentBlock.transform.position;
+				currentBlock.transform.Translate(offset);
+			// }
+			currentBlock.type = prefab.type;
 			fillQueue();
 		}
 
@@ -114,6 +129,10 @@ namespace TetARis.Core {
 					Mathf.FloorToInt((block.transform.position.x - leftTopCorner.position.x) / stepWidth),
 					Mathf.FloorToInt((block.transform.position.y - rightBottomCorner.position.y) / stepHeight)
 				);
+				if (boardPosition.y >= height) {
+					gameOver = true;
+					break;
+				}
 				board[boardPosition.x, boardPosition.y] = block;
 			}
 			currentBlock.transform.DetachChildren();
@@ -124,8 +143,9 @@ namespace TetARis.Core {
 			recalc = true;
 			sealBlock();
 			tryToClearLines();
-			spawnNewBlock();
+			spawnNewBlock(null, null);
 			recalc = false;
+			stashed = false;
 		}
 
 		public void Move(Vector2 direction) {
@@ -201,7 +221,6 @@ namespace TetARis.Core {
 			}
 			for (int row = line + 1; row < board.GetLength(1); row += 1) {
 				for (int el = 0; el < board.GetLength(0); el += 1) {
-					Utils.Log(el, row);
 					if (board[el, row]) {
 						board[el, row].transform.Translate(Vector2.down * stepHeight, Space.World);
 						board[el, row - 1] = board[el, row];
@@ -212,13 +231,17 @@ namespace TetARis.Core {
 		}
 
 		public void SwapWithStash() {
-			// if (stash == null) {
-			// 	stash = currentBlock;
-			// 	// stash.gameObject
-			// 	spawnNewBlock();
-			// 	return;
+			// if (!stashed) {
+			// 	stashed = true;
+			// 	Block.Type temp = currentBlock.type;
+			// 	Destroy(currentBlock.gameObject);
+			// 	spawnNewBlock(currentBlock.transform.position, stash);
+			// 	stash = temp;
 			// }
-			Utils.LogBoard(board, "o", "x");
+		}
+
+		public void PrintBoard() {
+			Utils.LogBoard(board, "x", " ");
 		}
 	}
 }

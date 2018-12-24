@@ -131,7 +131,6 @@ GameObject:
   m_Component:
   - component: {fileID: 4538233329795844}
   - component: {fileID: 114839508825475400}
-  - component: {fileID: 114918752371701280}
   m_Layer: 0
   m_Name: Block Z
   m_TagString: Block
@@ -177,26 +176,8 @@ MonoBehaviour:
   - {fileID: 1365805652931962}
   - {fileID: 1941391651791236}
   pivot: {fileID: 4655031860482782}
-  startingPoint: {fileID: 0}
---- !u!114 &114918752371701280
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1527477576128016}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fc7342c47cc05c45bd5eb9c0c0a4516, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chunks:
-  - {fileID: 1674529578576394}
-  - {fileID: 1569832451644072}
-  - {fileID: 1365805652931962}
-  - {fileID: 1941391651791236}
-  pivot: {fileID: 4655031860482782}
-  startingPoint: {fileID: 0}
+  startingPoint: {fileID: 7114251735538849687}
+  type: 6
 --- !u!1 &1569832451644072
 GameObject:
   m_ObjectHideFlags: 0

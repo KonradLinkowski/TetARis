@@ -11,15 +11,18 @@ namespace TetARis.Core {
 		public Transform pivot;
 		public Transform startingPoint;
 
+		public Type type;
+
+		public enum Type
+		{
+				I, J, L, O, S, T, Z
+		}
+
 		void OnEnable() {
 			List<GameObject> chunks = new List<GameObject>();
 			foreach (Transform child in transform) {
-				if (child.CompareTag("Pivot")) {
-					pivot = child;
-				} else if (child.CompareTag("Chunk")) {
+				if (child.CompareTag("Chunk")) {
 					chunks.Add(child.gameObject);
-				} else if (child.CompareTag("StartingPoint")) {
-					startingPoint = child;
 				}
 			}
 			this.chunks = chunks.ToArray();

@@ -276,6 +276,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d865dbe16f2f7f64aa9775be62b8ea5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  angleRange: 60.6
+  minSwipeLength: 10
 --- !u!1001 &8984801056883243344
 PrefabInstance:
   m_ObjectHideFlags: 0

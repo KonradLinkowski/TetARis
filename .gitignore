@@ -23,3 +23,6 @@ sysinfo.txt
 
 # Gradle
 .gradle/
+
+# Vuforia
+QCAR/

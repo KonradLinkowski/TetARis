@@ -133,6 +133,7 @@ namespace TetARis.Core {
 			currentBlock.transform.localPosition += (Vector3)transition;
 		}
 		void sealBlock() {
+			if (!currentBlock) return;
 			foreach (GameObject block in currentBlock.chunks) {
 				Vector2Int boardPosition = calcBoardPosition(
 					transform.InverseTransformPoint(

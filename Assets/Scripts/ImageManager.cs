@@ -24,9 +24,11 @@ namespace TetARis.Core {
       if (newStatus == TrackableBehaviour.Status.DETECTED ||
         newStatus == TrackableBehaviour.Status.TRACKED ||
         newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
+          BoardManager.Instance.gameObject.SetActive(true);
         BoardManager.Instance.undetected = false;
       } else {  
         BoardManager.Instance.undetected = true;
+        BoardManager.Instance.gameObject.SetActive(false);
       }
     }
   }

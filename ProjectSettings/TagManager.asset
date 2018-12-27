@@ -8,6 +8,7 @@ TagManager:
   - Block
   - Chunk
   - StartingPoint
+  - Console
   layers:
   - Default
   - TransparentFX

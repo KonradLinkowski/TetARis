@@ -1,6 +1,7 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Vuforia;
 
 namespace TetARis.Core {
 	public class BoardManager : MonoBehaviour {
@@ -40,25 +41,29 @@ namespace TetARis.Core {
 
 		private bool stashed = false;
 
+		public bool pause = true;
+
 		void OnEnable() {
 			Instance = this;
 		}
 
 		void Start () {
-			stepHeight = Mathf.Abs(rightBottomCorner.position.y - leftTopCorner.position.y) / height;
-			stepWidth = Mathf.Abs(rightBottomCorner.position.x - leftTopCorner.position.x) / width;
+			stepHeight = Mathf.Abs(rightBottomCorner.localPosition.y - leftTopCorner.localPosition.y) / height;
+			stepWidth = Mathf.Abs(rightBottomCorner.localPosition.x - leftTopCorner.localPosition.x) / width;
 			board = new GameObject[width, height];
-			currentBlock = randomBlock();
 			blockQueue = new Queue<Block>();
 			fillQueue();
-			spawnNewBlock(null, null);
 		}
 		
 		void FixedUpdate () {
-			if (!recalc && !gameOver) {
+			if (!recalc && !gameOver && !pause) {
+				if (!currentBlock) {
+					spawnNewBlock(null, null);
+				}
 				timer += Time.deltaTime;
 				if (timer >= fallTime) {
 					Vector2 transition = new Vector2(0, -stepHeight);
+
 					if (canMoveBlock(transition)) {
 						moveBlock(transition);
 					} else {
@@ -81,31 +86,31 @@ namespace TetARis.Core {
 
 		void spawnNewBlock(Vector3? position, Block.Type? pref) {
 			Block prefab = pref != null ? blocksPrefabs[(int)pref] : blockQueue.Dequeue();
-			Vector3 stashOffset = Vector3.zero;
 			if (pref != null) {
-				stashOffset = prefab.startingPoint.localPosition - currentBlock.startingPoint.localPosition;
+				Vector3 stashOffset = prefab.startingPoint.localPosition - currentBlock.startingPoint.localPosition;
+				currentBlock.transform.localPosition += stashOffset;
 			}
 			currentBlock = Instantiate(
 				prefab,
-				position != null ? (Vector3)position : spawnPoint.position,
-				Quaternion.identity
+				transform
 			);
-			currentBlock.transform.Translate(stashOffset);
-			// if (position == null) {
-				Vector3 offset = currentBlock.startingPoint.position - currentBlock.transform.position;
-				currentBlock.transform.Translate(offset);
-			// }
+			currentBlock.transform.localPosition = position != null ? (Vector3)position : spawnPoint.localPosition;
+			
+			currentBlock.transform.localPosition += currentBlock.startingPoint.localPosition;
+
 			currentBlock.type = prefab.type;
 			fillQueue();
 		}
 
 		bool canMoveBlock(Vector2 transition) {
+			if (!currentBlock) return false;
 			foreach (GameObject block in currentBlock.chunks) {
-				Vector2 desiredPosition = (Vector2)block.transform.position + transition;
-				Vector2Int boardDesiredPos = new Vector2Int(
-					Mathf.FloorToInt((desiredPosition.x - leftTopCorner.position.x) / stepWidth),
-					Mathf.FloorToInt((desiredPosition.y - rightBottomCorner.position.y) / stepHeight)
+				Vector2Int boardDesiredPos = calcBoardPosition(
+					(Vector2)transform.InverseTransformPoint(
+						block.transform.position
+					) + transition
 				);
+
 				if (boardDesiredPos.x >= width
 					|| boardDesiredPos.x < 0
 					|| boardDesiredPos.y < 0) {
@@ -118,24 +123,35 @@ namespace TetARis.Core {
 			return true;
 		}
 
-		void moveBlock(Vector2 transition) {
-			currentBlock.transform.Translate(transition);
+		Vector2Int calcBoardPosition(Vector2 point) {
+			return new Vector2Int(
+				Mathf.FloorToInt((point.x - leftTopCorner.localPosition.x) / stepWidth),
+				Mathf.FloorToInt((point.y - rightBottomCorner.localPosition.y) / stepHeight)
+			);
 		}
-
+		void moveBlock(Vector2 transition) {
+			currentBlock.transform.localPosition += (Vector3)transition;
+		}
 		void sealBlock() {
+			if (!currentBlock) return;
 			foreach (GameObject block in currentBlock.chunks) {
-				Vector2Int boardPosition = new Vector2Int(
-					Mathf.FloorToInt((block.transform.position.x - leftTopCorner.position.x) / stepWidth),
-					Mathf.FloorToInt((block.transform.position.y - rightBottomCorner.position.y) / stepHeight)
+				Vector2Int boardPosition = calcBoardPosition(
+					transform.InverseTransformPoint(
+						block.transform.position
+					)
 				);
 				if (boardPosition.y >= height) {
 					gameOver = true;
 					break;
 				}
+
 				board[boardPosition.x, boardPosition.y] = block;
 			}
-			currentBlock.transform.DetachChildren();
+			foreach (GameObject child in currentBlock.chunks) {
+				child.transform.parent = transform;
+			}
 			Destroy(currentBlock.gameObject);
+			PrintBoard();
 		}
 
 		private void recalculation() {
@@ -168,16 +184,15 @@ namespace TetARis.Core {
 			}
 		}
 
-		private bool canRotateBlock(bool counterClockwise) {
+		private bool canRotateBlock(bool counterclockwise) {
+			if (!currentBlock) return false;
 			foreach (GameObject block in currentBlock.chunks) {
-				Vector2 desiredPosition = 
-					Quaternion.Euler(0, 0, 90 * (counterClockwise ? 1 : -1))
+				Vector2 desiredPosition = transform.InverseTransformPoint(
+					Quaternion.Euler(0, 0, 90 * (counterclockwise ? 1 : -1))
 					* (block.transform.position - currentBlock.pivot.position)
-					+ currentBlock.pivot.position;
-				Vector2Int boardDesiredPos = new Vector2Int(
-					Mathf.FloorToInt((desiredPosition.x - leftTopCorner.position.x) / stepWidth),
-					Mathf.FloorToInt((desiredPosition.y - rightBottomCorner.position.y) / stepHeight)
+					+ currentBlock.pivot.position
 				);
+				Vector2Int boardDesiredPos = calcBoardPosition(desiredPosition);
 				if (boardDesiredPos.x >= width
 					|| boardDesiredPos.x < 0
 					|| boardDesiredPos.y < 0) {
@@ -194,7 +209,7 @@ namespace TetARis.Core {
 			foreach (GameObject block in currentBlock.chunks) {
 				block.transform.RotateAround(
 					currentBlock.pivot.position,
-					Vector3.forward,
+					currentBlock.pivot.forward,
 					90 * (counterClockwise ? 1 : -1)
 				);
 			}
@@ -221,7 +236,8 @@ namespace TetARis.Core {
 			for (int row = line + 1; row < board.GetLength(1); row += 1) {
 				for (int el = 0; el < board.GetLength(0); el += 1) {
 					if (board[el, row]) {
-						board[el, row].transform.Translate(Vector2.down * stepHeight, Space.World);
+						board[el, row].transform.localPosition += new Vector3(0, -stepHeight, 0);
+						// board[el, row].transform.Translate(Vector2.down * stepHeight, Space.Self);
 						board[el, row - 1] = board[el, row];
 						board[el, row] = null;
 					}
@@ -240,7 +256,7 @@ namespace TetARis.Core {
 		}
 
 		public void PrintBoard() {
-			Utils.LogBoard(board, "x", " ");
+			Utils.LogBoard(board, "x", "o");
 		}
 	}
 }

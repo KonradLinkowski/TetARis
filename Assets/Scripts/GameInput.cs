@@ -15,6 +15,16 @@ namespace TetARis.Core {
     [SerializeField]
     private float minSwipeLength;
     
+    void OnEnable()
+    {
+        Application.logMessageReceived += Utils.HandleLog;
+    }
+
+    void OnDisable()
+    {
+        Application.logMessageReceived -= Utils.HandleLog;
+    }
+
     void Update()
     {
       // keyboard input

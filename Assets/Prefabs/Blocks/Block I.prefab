@@ -268,7 +268,7 @@ MonoBehaviour:
   - {fileID: 1158515950952744}
   pivot: {fileID: 4163085387498372}
   startingPoint: {fileID: 3377027512356364752}
-  prefab: {fileID: 114006306970103890}
+  type: 0
 --- !u!1 &1365733742383274
 GameObject:
   m_ObjectHideFlags: 0

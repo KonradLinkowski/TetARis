@@ -41,7 +41,18 @@ namespace TetARis.Core {
 
 		private bool stashed = false;
 
-		public bool pause = true;
+		private bool _paused = false;
+
+		public bool Paused {
+			get {
+				return _paused;
+			}
+			set {
+				MenuManager.Instance.gameObject.SetActive(value);
+				_paused = value;
+			}
+		}
+		public bool undetected = true;
 
 		void OnEnable() {
 			Instance = this;
@@ -56,7 +67,7 @@ namespace TetARis.Core {
 		}
 		
 		void FixedUpdate () {
-			if (!recalc && !gameOver && !pause) {
+			if (!recalc && !gameOver && !undetected && !Paused) {
 				if (!currentBlock) {
 					spawnNewBlock(null, null);
 				}

@@ -5,6 +5,7 @@ using UnityEngine;
 namespace TetARis.Core {
   public class GameInput : MonoBehaviour
   {
+    private float holdTimer;
     private bool clicked = false;
     private Vector2 lastMousePosition;
 
@@ -14,6 +15,8 @@ namespace TetARis.Core {
 
     [SerializeField]
     private float minSwipeLength;
+
+    public float holdTime;
     
     void OnEnable()
     {
@@ -27,6 +30,9 @@ namespace TetARis.Core {
 
     void Update()
     {
+      if (BoardManager.Instance.Paused) {
+        return;
+      }
       // keyboard input
       if (Input.GetKeyDown(KeyCode.W)) {
         BoardManager.Instance.Rotate(false);
@@ -43,11 +49,19 @@ namespace TetARis.Core {
       } else if (Input.GetKeyDown(KeyCode.P)) {
         BoardManager.Instance.PrintBoard();
       }
+      
+      if (Input.GetMouseButton(0) && !BoardManager.Instance.Paused) {
+        holdTimer += Time.deltaTime;
+        if (holdTimer > holdTime) {
+          BoardManager.Instance.Paused = true;
+        }
+      }
 
       if (Input.GetMouseButtonDown(0)) {
         clicked = true;
         lastMousePosition = Input.mousePosition;
       } else if (Input.GetMouseButtonUp(0)) {
+        holdTimer = 0;
         clicked = false;
         Vector2 difference = (Vector2)Input.mousePosition - lastMousePosition;
         handleSwipe(difference);

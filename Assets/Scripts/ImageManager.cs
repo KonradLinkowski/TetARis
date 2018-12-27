@@ -24,10 +24,9 @@ namespace TetARis.Core {
       if (newStatus == TrackableBehaviour.Status.DETECTED ||
         newStatus == TrackableBehaviour.Status.TRACKED ||
         newStatus == TrackableBehaviour.Status.EXTENDED_TRACKED) {
-          BoardManager.Instance.pause = false;
-          print("detected");
+        BoardManager.Instance.undetected = false;
       } else {  
-        BoardManager.Instance.pause = true;
+        BoardManager.Instance.undetected = true;
       }
     }
   }

@@ -257,10 +257,17 @@ namespace TetARis.Core {
 		}
 
 		private void clearLine(int line) {
+			// Vector3 color = Vector3.zero;
+			// destroy line
 			for (int el = 0; el < board.GetLength(0); el += 1) {
+				Color col = board[el, line].GetComponent<MeshRenderer>().material.color;
+				CubeRotate.Instance.AddToQueue(col);
 				Destroy(board[el, line]);
 				board[el, line] = null;
 			}
+			// color /= board.GetLength(0);
+			// inst.GetComponent<MeshRenderer>().material.color = new Color(color.x, color.y, color.z);
+			// move blocks down
 			for (int row = line + 1; row < board.GetLength(1); row += 1) {
 				for (int el = 0; el < board.GetLength(0); el += 1) {
 					if (board[el, row]) {

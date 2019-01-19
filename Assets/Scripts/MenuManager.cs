@@ -18,6 +18,10 @@ namespace TetARis.Core {
 
     public Transform console;
 
+    public void RestartGame() {
+      BoardManager.Instance.reloadGame();
+    }
+
     public void ShowConsole(bool value) {
       consoleCanvas.SetActive(value);
     }

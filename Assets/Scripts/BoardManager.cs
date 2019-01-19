@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Vuforia;
 
 namespace TetARis.Core {
@@ -14,6 +15,9 @@ namespace TetARis.Core {
 		private Block currentBlock;
 
 		private Block.Type? stash = null;
+
+		[SerializeField]
+		private Transform[] queuePositions;
 		private Queue<Block> blockQueue;
 		[SerializeField]
 		private int queueLength;
@@ -63,14 +67,11 @@ namespace TetARis.Core {
 			stepWidth = Mathf.Abs(rightBottomCorner.localPosition.x - leftTopCorner.localPosition.x) / width;
 			board = new GameObject[width, height];
 			blockQueue = new Queue<Block>();
-			fillQueue();
+			blockQueue.Enqueue(randomBlock());
 		}
 		
 		void FixedUpdate () {
 			if (!recalc && !gameOver && !undetected && !Paused) {
-				if (!currentBlock) {
-					spawnNewBlock(null, null);
-				}
 				timer += Time.deltaTime;
 				if (timer >= fallTime) {
 					Vector2 transition = new Vector2(0, -stepHeight);
@@ -93,6 +94,18 @@ namespace TetARis.Core {
 			while (blockQueue.Count < queueLength) {
 				blockQueue.Enqueue(randomBlock());
 			}
+			foreach (Transform tran in queuePositions) {
+				foreach (Transform child in tran) {
+					Destroy(child.gameObject);
+				}
+			}
+			Block[] blocks = blockQueue.ToArray();
+			for (int i = 0; i < queuePositions.Length; i++) {
+				var inst = Instantiate(blocks[i], queuePositions[i]).transform;
+				inst.localScale = Vector3.one;
+				inst.localPosition = Vector3.zero;
+				inst.localRotation = Quaternion.identity;
+			}
 		}
 
 		void spawnNewBlock(Vector3? position, Block.Type? pref) {
@@ -111,6 +124,10 @@ namespace TetARis.Core {
 
 			currentBlock.type = prefab.type;
 			fillQueue();
+		}
+
+		public void reloadGame() {
+			SceneManager.LoadScene("SampleScene", LoadSceneMode.Single);
 		}
 
 		bool canMoveBlock(Vector2 transition) {
@@ -153,7 +170,7 @@ namespace TetARis.Core {
 				);
 				if (boardPosition.y >= height) {
 					gameOver = true;
-					break;
+					reloadGame();
 				}
 
 				board[boardPosition.x, boardPosition.y] = block;

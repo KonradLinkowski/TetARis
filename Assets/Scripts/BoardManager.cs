@@ -179,7 +179,7 @@ namespace TetARis.Core {
 				child.transform.parent = transform;
 			}
 			Destroy(currentBlock.gameObject);
-			PrintBoard();
+			// PrintBoard();
 		}
 
 		private void recalculation() {

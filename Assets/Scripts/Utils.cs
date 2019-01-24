@@ -49,10 +49,10 @@ namespace TetARis.Core {
     }
 
     private static void ConsoleLog(string text, Color? color = null) {
+      if (text.StartsWith("StopVuforia")) return;
       if (!textPrefab) {
         textPrefab = Resources.Load("Prefabs/Text") as GameObject;
       }
-      Debug.Log(MenuManager.Instance);
       Text textObject = GameObject.Instantiate(textPrefab, MenuManager.Instance.console).GetComponent<Text>();
       textObject.text = text;
       textObject.color = (Color)(color != null ? color : Color.black);

@@ -17,7 +17,7 @@ namespace TetARis.Core {
             mTrackableBehaviour.RegisterTrackableEventHandler(this);
         }
     }
-    public new void OnTrackableStateChanged(
+    public void OnTrackableStateChanged(
       TrackableBehaviour.Status previousStatus,
       TrackableBehaviour.Status newStatus)
     {

@@ -20,12 +20,12 @@ namespace TetARis.Core {
     
     void OnEnable()
     {
-        Application.logMessageReceived += Utils.HandleLog;
+      Application.logMessageReceived += Utils.HandleLog;
     }
 
     void OnDisable()
     {
-        Application.logMessageReceived -= Utils.HandleLog;
+      Application.logMessageReceived -= Utils.HandleLog;
     }
 
     void Update()
